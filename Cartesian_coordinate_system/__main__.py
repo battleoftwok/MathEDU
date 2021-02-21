@@ -5,6 +5,8 @@ import random
 import time
 import math
 
+# https://www.youtube.com/watch?v=DxntHp7-wbg&ab_channel=VertDider - видео, которое вдохновило на написание данного кода
+
 
 class App:
     _time_stamp = None
