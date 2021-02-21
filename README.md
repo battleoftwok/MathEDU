@@ -4,6 +4,7 @@
 Mathematical education. Study of mathematical phenomena. Mathematical animations.
 
 *Примечание: данный репозиторий является публичным и может быть использован в образовательных целях.
+             Python можно скачать тут: https://www.python.org/downloads/
              
 
 # Рекомендуется к рассмотрению:
