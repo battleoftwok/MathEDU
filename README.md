@@ -17,6 +17,7 @@ Mathematical education. Study of mathematical phenomena. Mathematical animations
          Часто стрелки (влево, вправо, ввехр, вниз)
          запрограммированы на какие-либо действия.
              
+![img_12.png](img_12.png)
 
 # Рекомендуется к рассмотрению:
 1. https://github.com/simensgreen/BarnsleysFern - построение папоротника Барнсли и изменение его параметров.
