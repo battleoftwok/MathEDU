@@ -8,6 +8,9 @@ Mathematics education. Math animations for research
 2. https://github.com/Battle-Of-Two-K/Buffon-s-Noodle-Problem - проблема иглы Бюффона.
 3. https://github.com/Battle-Of-Two-K/Calculating-Pi-by-Monte-Carlo-Method - вычисление числа пи методом Монте-Карло.
 
+# Наглядно о том, как должны работать программы:
+https://drive.google.com/file/d/1Vx1ddEKaxtmSxCiiqnOfGAvEub6njABt/view?usp=sharing
+
 # Что вас ждёт:
 ![img.png](img.png)
 ![img_1.png](img_1.png)
