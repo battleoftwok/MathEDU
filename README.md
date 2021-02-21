@@ -1,7 +1,10 @@
 # MathEDU
-Математическое образование. Математические анимации для исследования
+Математическое образование. Исследование математических явлений. Математические анимации.
 
-Mathematics education. Math animations for research
+Mathematical education. Study of mathematical phenomena. Mathematical animations.
+
+*Примечание: данный репозиторий является публичным и может быть использован в образовательных целях.
+             
 
 # Рекомендуется к рассмотрению:
 1. https://github.com/simensgreen/BarnsleysFern - построение папоротника Барнсли и изменение его параметров.
