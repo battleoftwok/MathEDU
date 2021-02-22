@@ -46,7 +46,7 @@ class Chart:
         """
         В данном методе происходит заполнение списка значений полярных углов (в радианах)
         """
-        for i in range(0, 1500):
+        for i in range(1, 1500):
             convert_radians = i * m.pi / 180
             self.parameter_lists['list_angles'].append(convert_radians)
 
@@ -63,7 +63,7 @@ class Chart:
         """
         for i in self.parameter_lists['list_angles']:
             self.parameter_lists['list_radius'].append(
-                70 * (arg ** m.sin(i * arg) - 2 * m.cos(4 * arg) + (m.sin((2 * i - m.pi) / arg)) ** 5))
+                270 * m.cos(arg / i) * m.cos(arg * i))
 
         # Примеры других интересных функций:
         # 80 * (2 - 2 * m.sin(i + arg) + m.sin(i) * (abs(m.cos(i)) ** .5) / (m.sin(i) + 1.4))
@@ -74,6 +74,7 @@ class Chart:
         # 80 * (2 + 7 * m.cos(m.sin(i) + m.sin(arg * i)) * m.cos(i))
         # 200 * m.sin(arg * i - 10 * arg) * m.cos(i)
         # 300 * (m.sin(i * arg) // arg)
+        # 270 * m.sin(arg / i) * m.cos(arg * i)
 
     def create_final_coord_list(self):
         """
