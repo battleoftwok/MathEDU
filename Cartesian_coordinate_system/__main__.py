@@ -138,78 +138,24 @@ class App:
         :param value: значение для расчёта значение функции в методе functions()
         """
         self.functions(value)
-        for step in self.new_list2:
+        for step in self.coords:
             self.objects.append(self.oval(*step, self.side_a, self.side_b, fill=self.drawning_color, width=2))
 
     def functions(self, val):
         """
-        Функция, которую необходимо изообразить на холсте
+        Функция, которую необходимо изобразить на холсте
         :param val: значение для расчёта функции
         """
-        self.new_list2 = []  # обнуление списка
+        self.coords = []  # обнуление списка
         for step in range(0, self.width):
-            self.new_list2.append(
-                (0.3 * step * math.e * math.sin(step * val), 0.3 * step * math.e * math.cos(step * val)))
+            self.coords.append(
+                (.3 * step * math.e * math.sin(step * val), 0.3 * step * math.e * math.cos(step * val)))
 
-            # Прмеры других функций:
-
-            # self.new_list2.append((100 * math.cos(val) * math.sin(val), 100 * math.sin(val) * math.cos(val)))
-            # self.new_list2.append((step * math.sin(step), step * math.cos(step)))
-            # self.new_list2.append((step * math.sin(step) ** 1 - val, step * math.cos(step) ** 1 + val))
-            # self.new_list2.append((step * math.sin(step) ** 2 - val, step * math.cos(step) ** 1 - val))
-            # self.new_list2.append((step * math.sin(step), val * math.cos(step)))
-            # self.new_list2.append((val * math.sin(step), step * math.cos(step)))
-            # self.new_list2.append((val * math.sin(step), val * math.cos(step)))
-            # self.new_list2.append((step * math.sin(val + step), step * math.tan(val + step)))
-            # self.new_list2.append((step * math.sin(1 / val + 10000 * step), step * math.tan(1000 / val + step)))
-            # self.new_list2.append((step * math.sin(1 / 1 + step * val), step * math.tan(1 / 1 + val * step)))
-            # self.new_list2.append((step * math.sin(step * val), step * math.tan(1 / val * step)))
-            # self.new_list2.append((step * math.sin(step) * math.cos(step), 2 * step))
-            # self.new_list2.append((step * math.sin(step) * math.cos(val), 2 * step))
-            # self.new_list2.append((step * math.sin(step) * math.cos(val), step * math.sin(val)))
-            # self.new_list2.append((step * math.sin(step) * math.cos(val), step * math.cos(val)))
-            # self.new_list2.append((step * math.sin(step) * math.cos(val), step * math.tan(val)))
-            # self.new_list2.append((step * math.sin(step) * math.cos(val), step * math.cos(val) / (1 + math.sin(step))))
-            # self.new_list2.append((step * math.tan(step) * math.cos(step), 2 * step))
-            # self.new_list2.append((-450 + val * math.cos(step) * math.tan(step) * math.sin(step), 3 * math.tan(.02 * val) * step))
-            # self.new_list2.append((step * math.sin(step) * (1 / (1 + .1 * val)), step * math.cos(step) * (1 / (1 + .1 * val))))
-            # self.new_list2.append((step * math.sin(step) * (1 / (1 + .01 * val)), step * math.cos(step) * (1 / (1 + .01 * val))))
-            # self.new_list2.append((.1 * step * val * math.sin(step * val), .1 * step * val * math.cos(step * val)))
-            # self.new_list2.append((step * math.tan(1 / val + 10000 * step), step * math.tan(1000 / val + step)))
-            # self.new_list2.append((step * math.tan(1 / val + 100 * step), step * math.tan(1000 / val + step)))
-            # self.new_list2.append((.01 * val ** 2 * math.cos(100 / val + 1 * step), step * math.sin(1 / 100 * val + step)))
-            # self.new_list2.append((.01 * val ** 2 * math.cos(100 / val + 1 * step), step * math.sin(1 / 10 * val + step)))
-            # self.new_list2.append((.01 * val ** 2 * math.cos(100 / val + 1 * step), step * math.sin(1 / 10 * val)))
-            # self.new_list2.append((.01 * val ** 2 * math.cos(100 / 1 + step), step * math.sin(1 / 1 + step * val)))
-            # self.new_list2.append((step * math.sin(step * val), -350 + val * step + math.tan(step * val)))
-            # self.new_list2.append((step * math.sin(step - step * val), val * step + math.tan(1 - step * val)))
-            # self.new_list2.append((step * math.sin(val - step * val), val * step + math.tan(step - step * val)))
-            # self.new_list2.append((step * math.sin(step * val), val * math.cos(step * val) - math.sin(step * val)))
-            # self.new_list2.append((step * math.sin(step * val) * math.cos(step * val), val * math.cos(step * val) + math.sin(step * val)))
-            # self.new_list2.append((-450 + step * val + math.sin(step * val), val * math.cos(step * val) + math.sin(step * val)))
-            # self.new_list2.append((-450 + .5 * step * val + math.sin(step * val), val * math.cos(step * val) + math.sin(step * val)))
-            # self.new_list2.append((-450 + .05 * step * val + math.sin(step * val), val * math.cos(step * val) + math.sin(step * val)))
-            # self.new_list2.append((-450 + step * val + math.sin(step * val), val * 5 * math.cos(step * val) + math.sin(step * val)))
-            # self.new_list2.append((-450 + step * val + math.sin(step * val), val * 5 * math.tan(step * val) + math.sin(step * val)))
-            # self.new_list2.append((-450 + step * val + math.sin(step * val), val * 5 * math.tan(step * val) - math.sin(step ** val ** 2)))
-            # self.new_list2.append((step * math.sin(step * val) + math.cos(step * val), step * val * math.cos(val * step) / (1 + math.sin(step))))
-            # self.new_list2.append((math.sin(val * step) * step * math.e, 100 * math.cos(val * step) * math.e))
-            # self.new_list2.append((math.sin(val ** step) * step * math.e, step * math.sin(val * step) * math.e))
-            # self.new_list2.append((100 * math.e * math.sin(step) ** 3, 100 * math.e * math.cos(step * val) ** 3))
-            # self.new_list2.append((100 * math.e * math.tan(step) ** 3, 100 * math.e * math.tan(step * val) ** 3))  # тангенсальный дождь
-            # self.new_list2.append((.1 * step * math.sin(step * val) - (1 - math.sin(step * val)), 100 * math.tan(step * val) - (1 + math.cos(step * val))))
-            # self.new_list2.append((10000 / (1 + step * math.e * math.sin(step * val)), 10000 / (1 - step * math.e * math.cos(step * val))))
-            # self.new_list2.append((val * math.sin(step * val) * math.cos(step * val), val * math.cos(step * val) + math.sin(step * val)))
-            # self.new_list2.append((100 * math.sin(step) * math.cos(val) * math.tan(val), 100 * math.sin(val) * math.cos(step) * math.tan(val)))
-            # self.new_list2.append((100 * math.sin(step) * math.cos(val) * math.tan(step), 100 * math.sin(val) * math.cos(step) * math.tan(val)))
-            # self.new_list2.append((100 * math.cos(step * val) * math.sin(val), 100 * math.sin(step * val) * math.cos(val)))
-            # self.new_list2.append((100 * math.cos(step * val) * math.sin(val), 100 * math.sin(step * val) * math.cos(step * val)))
-            # self.new_list2.append((100 * math.cos(step) * math.sin(step * val), 100 * math.sin(step * val) * math.cos(val)))
-            # self.new_list2.append((step * math.sin(1 / val + 10 * step), step * math.tan(1 / val + step)))
+            # TODO: Примеры других функций лежат в текстовом файле:
 
     def run(self):
         """
-        Запустить процесс (в этом же методе происходит "упаковка" self.root)
+        Запустить процесс
         """
         self._process()
         self.root.mainloop()
@@ -237,7 +183,7 @@ class App:
         :param side_width: ширина прямоугольника (горизонтальная сторона прямоугольника)
         :param side_height: высота прямоугольника (вертикальная сторона прямоугольника)
         :param kwargs: остальные опции (можно добавлять все опции, которые есть у метода create_rectangle
-        :return: прямоугольник координатами левого вверхнего угла (start_x, start_y) и длинами сторон
+        :return: прямоугольник координатами левого верхнего угла (start_x, start_y) и длинами сторон
         side_width, side_height.
         """
         return self.canvas.create_rectangle(start_x, start_y,
@@ -256,7 +202,7 @@ class App:
         :param side_width: ширина прямоугольника (горизонтальная сторона прямоугольника)
         :param side_height: высота прямоугольника (вертикальная сторона прямоугольника)
         :param kwargs: остальные опции (можно добавлять все опции, которые есть у метода create_rectangle
-        :return: эллипс, вписанный в прямоугольник с координатами левого вверхнего угла (start_x, start_y) и длинами
+        :return: эллипс, вписанный в прямоугольник с координатами левого верхнего угла (start_x, start_y) и длинами
          сторон side_width, side_height.
         :return:
         """
