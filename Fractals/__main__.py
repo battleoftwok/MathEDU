@@ -2,6 +2,9 @@ import tkinter as tk
 import random
 import math
 
+# TODO: Данное решение использует create_polygon, но это не правильно!
+#       Нужно использовать распределение точек размеров в 1 пиксель.
+
 
 class Distribution:
     width = 720
