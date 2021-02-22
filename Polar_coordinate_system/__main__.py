@@ -2,7 +2,7 @@ from tkinter import Canvas
 from tkinter_app_pattern import TkinterApp
 import math as m
 
-# http://grafikus.ru/examples/polar-functions - примеры графиков в полряных коодинатах
+# http://grafikus.ru/examples/polar-functions - примеры графиков в полярных координатах
 
 
 class Chart:
@@ -22,7 +22,7 @@ class Chart:
         Args:
             canvas: полотно, на котором необходимо изобразить график
             color: цвет осей
-            markers: метки (отрисовывются если markers = True)
+            markers: метки (рисуются если markers = True)
             amount_markers: кол-во меток (по умолчанию: 10)
             indent: отступ осей от краёв полотна
         """
@@ -57,23 +57,28 @@ class Chart:
         Args:
             arg: изменяемая величина, которая позволяет отследить изменение графика,
                  если подставить её в математическое выражение (можно экспериментировать,
-                 подставляя данную переменную в любую часть выраженя, можно умножать на arg,
+                 подставляя данную переменную в любую часть выражения, можно умножать на arg,
                  делить, прибавлять и т.д. При необходимости можно добавить новую переменную (например,
                  arg будет увеличиваться, а new_variable будет уменьшаться)).
         """
         for i in self.parameter_lists['list_angles']:
             self.parameter_lists['list_radius'].append(
-                80 * (m.e ** m.sin(i * arg) - 2 * m.cos(4 * i) + (m.sin((2 * i - m.pi) / 24)) ** 5))
+                70 * (arg ** m.sin(i * arg) - 2 * m.cos(4 * arg) + (m.sin((2 * i - m.pi) / arg)) ** 5))
 
-        # Примеры других интереных функций:
+        # Примеры других интересных функций:
         # 80 * (2 - 2 * m.sin(i + arg) + m.sin(i) * (abs(m.cos(i)) ** .5) / (m.sin(i) + 1.4))
+        # 70 * (m.e ** m.sin(i) - 2 * m.cos(4 * i) + (m.sin((2 * i - m.pi) / 24)) ** 5))
+        # 70 * (m.e ** m.sin(i * arg) - 2 * m.cos(4 * arg) + (m.sin((2 * i - m.pi) / arg)) ** 5))
+        # 180 * m.sin(arg * m.e ** m.sin(i / arg) * m.e ** m.cos(i ** (1 / arg)))
+        # 180 * m.sin(arg * m.e ** m.sin(i / arg) * m.e ** m.cos(i / arg))
+        # 80 * (2 + 7 * m.cos(m.sin(i) + m.sin(arg * i)) * m.cos(i))
         # 200 * m.sin(arg * i - 10 * arg) * m.cos(i)
         # 300 * (m.sin(i * arg) // arg)
 
     def create_final_coord_list(self):
         """
-        Заполнение списка окончательно посчитанными координатами. По ним будет стоиться график.
-        (заполнение просиходит с корретировкой координат по Canvas)
+        Заполнение списка окончательно посчитанными координатами. По ним будет строиться график.
+        (заполнение происходит с корректировкой координат по Canvas)
         """
         for i, j in zip(self.parameter_lists['list_radius'], self.parameter_lists['list_angles']):
             self.parameter_lists['list_coords'].append(
@@ -147,7 +152,7 @@ class App(TkinterApp):
         """
         Всё что указано в этом методе выполниться ровно один раз при запуске приложения
         Кнопки "стрелка вправо" и "стрелка влево" управляют скоростью изменения величины,
-        которая фигугирует в уравнении (следовательно с помощью этих кнопок можно управлять
+        которая фигурирует в уравнении (следовательно с помощью этих кнопок можно управлять
         скоростью воспроизведения анимации)
         """
         self.canvas = Canvas(self.root, **self.canvas_opts)
