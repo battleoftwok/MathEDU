@@ -151,7 +151,7 @@ class App:
             self.coords.append(
                 (.3 * step * math.e * math.sin(step * val), 0.3 * step * math.e * math.cos(step * val)))
 
-            # TODO: Примеры других функций лежат в текстовом файле:
+            # TODO: Примеры других функций лежат в текстовом файле
 
     def run(self):
         """
