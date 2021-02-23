@@ -5,6 +5,7 @@ import random
 import time
 import math
 
+
 # https://www.youtube.com/watch?v=DxntHp7-wbg&ab_channel=VertDider - видео, которое вдохновило на написание данного кода
 
 
@@ -69,7 +70,8 @@ class App:
         Label(self.color_frames, text="Параметры:", font=('Comic Sans MS', self.all_font_size)).grid(row=6, column=0,
                                                                                                      columnspan=10)
 
-        Label(self.color_frames, text=f"Шаг({self.func_no_plus}):", font=('Comic Sans MS', self.all_font_size)).grid(row=7, column=0)
+        Label(self.color_frames, text=f"Шаг({self.func_no_plus}):", font=('Comic Sans MS', self.all_font_size)).grid(
+            row=7, column=0)
         self.entry = Entry(self.color_frames, width=10)
         self.entry.grid(row=7, column=1)
 
@@ -186,9 +188,10 @@ class App:
         :return: прямоугольник координатами левого верхнего угла (start_x, start_y) и длинами сторон
         side_width, side_height.
         """
-        return self.canvas.create_rectangle(start_x, start_y,
-                                            start_x + side_width,
-                                            start_y + side_height,
+        return self.canvas.create_rectangle(start_x + self.width / 2,
+                                            start_y + self.width / 2,
+                                            start_x + self.width / 2 + side_width,
+                                            start_y + self.width / 2 + side_height,
                                             **kwargs)
 
     def oval(self, start_x, start_y, side_width, side_height, **kwargs):

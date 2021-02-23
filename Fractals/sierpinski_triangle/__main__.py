@@ -38,7 +38,7 @@ def process():
     root.after(1, process)
     target_point_no = randint(0, len(START_POINTS) - 1)
     current_point = center(current_point, START_POINTS[target_point_no])
-    draw_point(current_point, color='white')
+    draw_point(current_point, color=get_random_hex_color())
 
 
 root = tk.Tk()
