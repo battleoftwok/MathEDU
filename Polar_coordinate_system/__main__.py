@@ -1,6 +1,7 @@
 from tkinter import Canvas
 from tkinter_app_pattern import TkinterApp
 import math as m
+from random import randint
 
 
 # http://grafikus.ru/examples/polar-functions - примеры графиков в полярных координатах
@@ -85,7 +86,12 @@ class Chart:
         """
 
         # Небольшая ремарка: если изменить create_line на create_polygon, то будет интересно)
-        self.canvas_id = [self.canvas.create_line(*self.parameter_lists['list_coords'], fill=fill, width=2)]
+        self.canvas_id = [self.canvas.create_line(*self.parameter_lists['list_coords'],
+                                                  fill=fill, width=2)]
+
+    @staticmethod
+    def get_random_hex_color(red_limit=(0, 255), green_limit=(0, 255), blue_limit=(0, 255)):
+        return '#%.2x%.2x%.2x' % (randint(*red_limit), randint(*green_limit), randint(*blue_limit))
 
     def _draw_axes(self):
         """
