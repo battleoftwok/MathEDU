@@ -25,7 +25,7 @@ Mathematical education. Study of mathematical phenomena. Mathematical animations
 3. https://github.com/Battle-Of-Two-K/Calculating-Pi-by-Monte-Carlo-Method - вычисление числа пи методом Монте-Карло.
 
 # Наглядно о том, как должны работать программы, представленные в данном репозитории:
-https://drive.google.com/file/d/1Vx1ddEKaxtmSxCiiqnOfGAvEub6njABt/view?usp=sharing
+https://drive.google.com/file/d/17OhSwrdRIsnhshUIAZrB1_ldD_wDdFXg/view?usp=sharing
 
 # Что вас ждёт:
 ![img.png](img.png)
