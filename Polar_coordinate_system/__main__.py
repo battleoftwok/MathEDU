@@ -1,24 +1,100 @@
+from abc import ABC, abstractmethod
 from tkinter import Canvas
 from tkinter_app_pattern import TkinterApp
 import math as m
 from random import randint
+from PIL import Image, EpsImagePlugin
+
+EpsImagePlugin.gs_windows_binary = r"C:\Program Files\gs\gs9.55.0\bin\gswin64c.exe"
+
+DIAPASON = 0, 11750
 
 
 # http://grafikus.ru/examples/polar-functions - примеры графиков в полярных координатах
 
 
+def get_random_hex_color(red_limit=(0, 255), green_limit=(0, 255), blue_limit=(0, 255)):
+    return '#%.2x%.2x%.2x' % (randint(*red_limit), randint(*green_limit), randint(*blue_limit))
+
+
+class FunctionStrategy(ABC):
+
+    @abstractmethod
+    def convert_coords(self, coords: tuple):
+        raise NotImplementedError
+
+    @abstractmethod
+    def __call__(self, arg):
+        raise NotImplementedError
+
+    def __init__(self, width, height):
+        self.height = height
+        self.width = width
+
+
+class DiapasonFunctionStrategy(FunctionStrategy, ABC):
+    def __init__(self, width, height, diapason: tuple):
+        super().__init__(width, height)
+        self.diapason = diapason
+
+
+class DekartFunctionStrategy(DiapasonFunctionStrategy, ABC):
+
+    def convert_coords(self, coords: tuple):
+        return coords[0] + self.width // 2, -coords[1] + self.height // 2
+
+    @property
+    def x_values(self):
+        return (i / 100 for i in range(*self.diapason))
+
+
+class PolarFunctionStrategy(DiapasonFunctionStrategy, ABC):
+    def convert_coords(self, coords: tuple):
+        return (-coords[0] * m.cos(coords[1]) + self.width // 2,
+                -coords[0] * m.sin(coords[1]) + self.height // 2)
+
+    @property
+    def polar_angles(self):
+        return (i * m.pi for i in range(*self.diapason))
+
+
+class Parabola(DekartFunctionStrategy):
+    def __call__(self, arg):
+        coords = ((x, x ** 2) for x in self.x_values)
+        return (self.convert_coords(coord) for coord in coords)
+
+
+class ButterflyStrategy(PolarFunctionStrategy):
+
+    def __call__(self, arg):
+        foo = ((100 * (m.e ** m.sin(angle * arg) - 2 * m.cos(4 * angle) + (m.sin((2 * angle - m.pi) / 24)) ** 5), angle)
+               for angle in self.polar_angles)
+        return (self.convert_coords(coords) for coords in foo)
+
+
+class HeartStrategy(PolarFunctionStrategy):
+
+    def __call__(self, arg):
+        foo = ((80 * (2 - 2 * m.sin(angle + arg) + m.sin(angle) * (abs(m.cos(angle)) ** .5) / (m.sin(angle) + 1.4)),
+                angle)
+               for angle in self.polar_angles)
+        return (self.convert_coords(coords) for coords in foo)
+
+
+class ArhimedSpiralStrategy(PolarFunctionStrategy):
+
+    def __call__(self, arg):
+        foo = ((2 * angle,  angle) for angle in self.polar_angles)
+        return (self.convert_coords(coords) for coords in foo)
+
+
 class Chart:
     marker_len = 10
-
-    parameter_lists = {
-        'list_angles': [],
-        'list_radius': [],
-        'list_coords': []
-    }
-
     canvas_id = []
+    arg = 1
 
-    def __init__(self, canvas: Canvas, color, axes=True, markers=False, amount_markers=10, indent=50):
+    def __init__(self, function: FunctionStrategy, canvas: Canvas, color, axes=True, markers=False, amount_markers=10,
+                 indent=50):
         """
         Конструктор (инициализация)
         Args:
@@ -34,6 +110,7 @@ class Chart:
         self.indent = indent
         self.amount_markers = amount_markers
         self.axes = axes
+        self.function = function
 
         self.canvas_width = int(self.canvas['width'])  # ширина полотна
         self.canvas_height = int(self.canvas['height'])  # высота полотна
@@ -44,40 +121,6 @@ class Chart:
         if markers:
             self._draw_markers()
 
-    def create_polar_angle(self):
-        """
-        В данном методе происходит заполнение списка значений полярных углов (в радианах)
-        """
-        for i in range(1, 1500):
-            convert_radians = i * m.pi / 180
-            self.parameter_lists['list_angles'].append(convert_radians)
-
-    def create_polar_radius(self, arg):
-        """
-        В данном методе происходит заполнение списка значений полярных радиусов с учётом математического
-        выражения (функции).
-        Args:
-            arg: изменяемая величина, которая позволяет отследить изменение графика,
-                 если подставить её в математическое выражение (можно экспериментировать,
-                 подставляя данную переменную в любую часть выражения, можно умножать на arg,
-                 делить, прибавлять и т.д. При необходимости можно добавить новую переменную (например,
-                 arg будет увеличиваться, а new_variable будет уменьшаться)).
-        """
-        for i in self.parameter_lists['list_angles']:
-            self.parameter_lists['list_radius'].append(
-                270 * m.cos(arg / i) * m.cos(arg * i))
-
-        # TODO: Примеры других функций лежат в текстовом файле
-
-    def create_final_coord_list(self):
-        """
-        Заполнение списка окончательно посчитанными координатами. По ним будет строиться график.
-        (заполнение происходит с корректировкой координат по Canvas)
-        """
-        for i, j in zip(self.parameter_lists['list_radius'], self.parameter_lists['list_angles']):
-            self.parameter_lists['list_coords'].append(
-                (-i * m.cos(j) + self.canvas_width // 2, -i * m.sin(j) + self.canvas_height // 2))
-
     def draw_function(self, fill):
         """
         Рисовать график
@@ -86,12 +129,8 @@ class Chart:
         """
 
         # Небольшая ремарка: если изменить create_line на create_polygon, то будет интересно)
-        self.canvas_id = [self.canvas.create_line(*self.parameter_lists['list_coords'],
+        self.canvas_id = [self.canvas.create_line(*self.function(self.arg),
                                                   fill=fill, width=2)]
-
-    @staticmethod
-    def get_random_hex_color(red_limit=(0, 255), green_limit=(0, 255), blue_limit=(0, 255)):
-        return '#%.2x%.2x%.2x' % (randint(*red_limit), randint(*green_limit), randint(*blue_limit))
 
     def _draw_axes(self):
         """
@@ -125,27 +164,17 @@ class Chart:
             self.canvas.create_line(x, self.canvas_height - self.indent + self.marker_len,
                                     x, self.canvas_height - self.indent, fill=self.color, width=2)
 
-    def clean_canvas(self, clean_list: list):
-        """
-        Метод, который очищает полотно (canvas) от элементов указанного списка.
-        И очищает сам список от дескрипторов.
-        Args:
-            clean_list:
-        """
-        for canvas_obj in clean_list:
-            self.canvas.delete(canvas_obj)
-        clean_list = []
-
 
 class App(TkinterApp):
     canvas_opts = {
         'width': 720,
         'height': 720,
-        'bg': 'black'
+        'bg': "black"
     }
 
     arg = 1
     plus = .01
+    pause_flag = True
 
     def _ready(self):
         """
@@ -154,18 +183,33 @@ class App(TkinterApp):
         которая фигурирует в уравнении (следовательно с помощью этих кнопок можно управлять
         скоростью воспроизведения анимации)
         """
+
         self.canvas = Canvas(self.root, **self.canvas_opts)
         self.canvas.pack()
 
         self.root.bind('<Right>', self.increase_variable)
         self.root.bind('<Left>', self.decrease_variable)
+        self.root.bind('<space>', self.pause)
+        self.root.bind('<Control-s>', self.save_picture)
 
-        self.chart = Chart(self.canvas, 'yellow', markers=True)
+        self.chart = Chart(Parabola(self.canvas_opts["width"], self.canvas_opts["height"], DIAPASON),
+                           self.canvas, 'gray', markers=True)
 
-        self.chart.create_polar_angle()
-        self.chart.create_polar_radius(self.arg)
-        self.chart.create_final_coord_list()
-        self.chart.draw_function('red')
+    def save_picture(self, event):
+        self.canvas.postscript(file="condition.ps", colormode="color")
+        print("Состояние сохранено")
+        img = Image.open("condition.ps")
+        img.save("condition.png", "png")
+
+    def pause(self, event):
+        # if self.pause_flag:
+        #     self.plus = 0
+        #     self.pause_flag = False
+        # elif self.pause_flag is False:
+        #     self.plus = .01
+        #     self.pause_flag = True
+
+        self.chart.function = ArhimedSpiralStrategy(self.canvas_opts["width"], self.canvas_opts["height"], DIAPASON)
 
     def increase_variable(self, event):
         self.plus += .001
@@ -174,17 +218,21 @@ class App(TkinterApp):
         self.plus -= .001
 
     def _physics_process(self, delta):
-        self.chart.parameter_lists['list_radius'] = []
-        self.chart.parameter_lists['list_coords'] = []
-        self.chart.clean_canvas(self.chart.canvas_id)
+        self.clean_canvas()
 
-        self.arg += self.plus
-
-        self.chart.create_polar_radius(self.arg)
-        self.chart.create_final_coord_list()
+        self.chart.arg += self.plus * delta
 
     def _draw(self):
-        self.chart.draw_function('red')
+        self.chart.draw_function("#EEBD08")
+
+    def clean_canvas(self):
+        """
+        Метод, который очищает полотно (canvas) от элементов указанного списка.
+        И очищает сам список от дескрипторов.
+        """
+        for canvas_obj in self.chart.canvas_id:
+            self.canvas.delete(canvas_obj)
+        self.chart.canvas_id = []
 
 
 if __name__ == '__main__':

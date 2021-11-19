@@ -21,6 +21,7 @@ class TkinterApp:
 
     def __init__(self, **tk_parameters):
         self.root = tk.Tk()
+        self.root["bg"] = "black"
 
         self.log = logging.getLogger(f'{self.__class__.__name__} in {__file__}')
         self.config = configparser.ConfigParser()
