@@ -69,7 +69,7 @@ class Parabola(DekartFunctionStrategy):
 class ButterflyStrategy(PolarFunctionStrategy):
 
     def __call__(self, arg):
-        foo = ((100 * (m.e ** m.sin(angle * arg) - 2 * m.cos(4 * angle) + (m.sin((2 * angle - m.pi) / 24)) ** 5), angle)
+        foo = ((50 * (m.e ** m.sin(angle * arg) - 2 * m.cos(4 * angle) + (m.sin((2 * angle - m.pi) / 24)) ** 5), angle)
                for angle in self.polar_angles)
 
         return (self.convert_coords(coords) for coords in foo)
@@ -78,7 +78,7 @@ class ButterflyStrategy(PolarFunctionStrategy):
 class HeartStrategy(PolarFunctionStrategy):
 
     def __call__(self, arg):
-        foo = ((80 * (2 - 2 * m.sin(angle * arg) + m.sin(angle) * (abs(m.cos(angle)) ** .5) / (m.sin(angle) + 1.4)),
+        foo = ((40 * (2 - 2 * m.sin(angle * arg) + m.sin(angle) * (abs(m.cos(angle)) ** .5) / (m.sin(angle) + 1.4)),
                 angle)
                for angle in self.polar_angles)
         return (self.convert_coords(coords) for coords in foo)
@@ -87,7 +87,14 @@ class HeartStrategy(PolarFunctionStrategy):
 class ArhimedSpiralStrategy(PolarFunctionStrategy):
 
     def __call__(self, arg):
-        foo = ((2 * angle,  angle) for angle in self.polar_angles)
+        foo = ((30*(m.cos(angle**2 + 20*arg) - 4),
+                angle) for angle in self.polar_angles)
+        return (self.convert_coords(coords) for coords in foo)
+
+
+class PolarRoseStrategy(PolarFunctionStrategy):
+    def __call__(self, arg):
+        foo = ((150*m.sin(7/4*angle*arg), angle) for angle in self.polar_angles)
         return (self.convert_coords(coords) for coords in foo)
 
 
@@ -168,13 +175,13 @@ class Chart:
 
 class App(TkinterApp):
     canvas_opts = {
-        'width': 720,
-        'height': 720,
+        'width': 420,
+        'height': 420,
         'bg': "black"
     }
 
     arg = 1
-    plus = .01
+    plus = 0
     pause_flag = True
 
     def _ready(self):
@@ -185,19 +192,34 @@ class App(TkinterApp):
         скоростью воспроизведения анимации)
         """
 
+        self.canvas_4 = Canvas(self.root, **self.canvas_opts)
+        self.canvas_4.grid(row=0, column=0)
+
+        self.canvas_3 = Canvas(self.root, **self.canvas_opts)
+        self.canvas_3.grid(row=0, column=1)
+
+        self.canvas_2 = Canvas(self.root, **self.canvas_opts)
+        self.canvas_2.grid(row=1, column=0)
+
         self.canvas = Canvas(self.root, **self.canvas_opts)
-        self.canvas.pack()
+        self.canvas.grid(row=1, column=1)
 
         self.root.bind('<Right>', self.increase_variable)
         self.root.bind('<Left>', self.decrease_variable)
         self.root.bind('<space>', self.pause)
         self.root.bind('<Control-s>', self.save_picture)
 
+        self.chart_4 = Chart(ArhimedSpiralStrategy(self.canvas_opts["width"], self.canvas_opts["height"], DIAPASON),
+                             self.canvas_4, 'gray', markers=True)
+
+        self.chart_3 = Chart(PolarRoseStrategy(self.canvas_opts["width"], self.canvas_opts["height"], DIAPASON),
+                             self.canvas_3, 'gray', markers=True)
+
+        self.chart_2 = Chart(HeartStrategy(self.canvas_opts["width"], self.canvas_opts["height"], DIAPASON),
+                             self.canvas_2, 'gray', markers=True)
+
         self.chart = Chart(ButterflyStrategy(self.canvas_opts["width"], self.canvas_opts["height"], DIAPASON),
                            self.canvas, 'gray', markers=True)
-
-        # self.chart_2 = Chart(ButterflyStrategy(self.canvas_opts["width"], self.canvas_opts["height"], DIAPASON),
-        #                      Canvas(self.root, **self.canvas_opts).pack(), 'gray', markers=True)
 
     def save_picture(self, event):
         self.canvas.postscript(file="condition.ps", colormode="color")
@@ -220,20 +242,29 @@ class App(TkinterApp):
         self.plus -= .001
 
     def _physics_process(self, delta):
-        self.clean_canvas()
+        self.clean_canvas(self.canvas, self.chart.canvas_id)
+        self.clean_canvas(self.canvas_2, self.chart_2.canvas_id)
+        self.clean_canvas(self.canvas_3, self.chart_2.canvas_id)
+        self.clean_canvas(self.canvas_4, self.chart_2.canvas_id)
 
+        self.chart_4.arg += self.plus * delta
+        self.chart_3.arg += self.plus * delta
+        self.chart_2.arg += self.plus * delta
         self.chart.arg += self.plus * delta
 
     def _draw(self):
-        self.chart.draw_function("#EEBD08")
+        self.chart_4.draw_function("green")
+        self.chart_3.draw_function("blue")
+        self.chart_2.draw_function("#EEBD08")
+        self.chart.draw_function("red")
 
-    def clean_canvas(self):
+    def clean_canvas(self, canvas, ids_list):
         """
         Метод, который очищает полотно (canvas) от элементов указанного списка.
         И очищает сам список от дескрипторов.
         """
-        for canvas_obj in self.chart.canvas_id:
-            self.canvas.delete(canvas_obj)
+        for canvas_obj in ids_list:
+            canvas.delete(canvas_obj)
         self.chart.canvas_id = []
 
 
