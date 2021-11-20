@@ -7,7 +7,7 @@ from PIL import Image, EpsImagePlugin
 
 EpsImagePlugin.gs_windows_binary = r"C:\Program Files\gs\gs9.55.0\bin\gswin64c.exe"
 
-DIAPASON = 0, 11750
+DIAPASON = -750, 750
 
 
 # http://grafikus.ru/examples/polar-functions - примеры графиков в полярных координатах
@@ -45,20 +45,22 @@ class DekartFunctionStrategy(DiapasonFunctionStrategy, ABC):
 
     @property
     def x_values(self):
-        return (i / 100 for i in range(*self.diapason))
+        return (i for i in range(*self.diapason))
 
 
 class PolarFunctionStrategy(DiapasonFunctionStrategy, ABC):
+
     def convert_coords(self, coords: tuple):
         return (-coords[0] * m.cos(coords[1]) + self.width // 2,
                 -coords[0] * m.sin(coords[1]) + self.height // 2)
 
     @property
     def polar_angles(self):
-        return (i * m.pi for i in range(*self.diapason))
+        return (i * m.pi / 180 for i in range(*self.diapason))
 
 
 class Parabola(DekartFunctionStrategy):
+
     def __call__(self, arg):
         coords = ((x, x ** 2) for x in self.x_values)
         return (self.convert_coords(coord) for coord in coords)
@@ -69,13 +71,14 @@ class ButterflyStrategy(PolarFunctionStrategy):
     def __call__(self, arg):
         foo = ((100 * (m.e ** m.sin(angle * arg) - 2 * m.cos(4 * angle) + (m.sin((2 * angle - m.pi) / 24)) ** 5), angle)
                for angle in self.polar_angles)
+
         return (self.convert_coords(coords) for coords in foo)
 
 
 class HeartStrategy(PolarFunctionStrategy):
 
     def __call__(self, arg):
-        foo = ((80 * (2 - 2 * m.sin(angle + arg) + m.sin(angle) * (abs(m.cos(angle)) ** .5) / (m.sin(angle) + 1.4)),
+        foo = ((80 * (2 - 2 * m.sin(angle * arg) + m.sin(angle) * (abs(m.cos(angle)) ** .5) / (m.sin(angle) + 1.4)),
                 angle)
                for angle in self.polar_angles)
         return (self.convert_coords(coords) for coords in foo)
@@ -89,7 +92,6 @@ class ArhimedSpiralStrategy(PolarFunctionStrategy):
 
 
 class Chart:
-    marker_len = 10
     canvas_id = []
     arg = 1
 
@@ -118,7 +120,7 @@ class Chart:
         if axes:
             self._draw_axes()
 
-        if markers:
+        if not markers:
             self._draw_markers()
 
     def draw_function(self, fill):
@@ -129,8 +131,7 @@ class Chart:
         """
 
         # Небольшая ремарка: если изменить create_line на create_polygon, то будет интересно)
-        self.canvas_id = [self.canvas.create_line(*self.function(self.arg),
-                                                  fill=fill, width=2)]
+        self.canvas_id = [self.canvas.create_line(*self.function(self.arg), fill=fill, width=2)]
 
     def _draw_axes(self):
         """
@@ -156,12 +157,12 @@ class Chart:
         """
         size_between_markers = (self.canvas_height - 2 * self.indent) // self.amount_markers
         for y in range(self.indent, self.canvas_height - self.indent + size_between_markers, size_between_markers):
-            self.canvas.create_line(self.indent - self.marker_len, y,
+            self.canvas.create_line(self.indent - self.amount_markers, y,
                                     self.indent, y, fill=self.color, width=2)
 
         size_between_markers = (self.canvas_width - 2 * self.indent) // self.amount_markers
         for x in range(self.indent, self.canvas_width - self.indent + size_between_markers, size_between_markers):
-            self.canvas.create_line(x, self.canvas_height - self.indent + self.marker_len,
+            self.canvas.create_line(x, self.canvas_height - self.indent + self.amount_markers,
                                     x, self.canvas_height - self.indent, fill=self.color, width=2)
 
 
@@ -192,8 +193,11 @@ class App(TkinterApp):
         self.root.bind('<space>', self.pause)
         self.root.bind('<Control-s>', self.save_picture)
 
-        self.chart = Chart(Parabola(self.canvas_opts["width"], self.canvas_opts["height"], DIAPASON),
+        self.chart = Chart(ButterflyStrategy(self.canvas_opts["width"], self.canvas_opts["height"], DIAPASON),
                            self.canvas, 'gray', markers=True)
+
+        # self.chart_2 = Chart(ButterflyStrategy(self.canvas_opts["width"], self.canvas_opts["height"], DIAPASON),
+        #                      Canvas(self.root, **self.canvas_opts).pack(), 'gray', markers=True)
 
     def save_picture(self, event):
         self.canvas.postscript(file="condition.ps", colormode="color")
@@ -202,14 +206,12 @@ class App(TkinterApp):
         img.save("condition.png", "png")
 
     def pause(self, event):
-        # if self.pause_flag:
-        #     self.plus = 0
-        #     self.pause_flag = False
-        # elif self.pause_flag is False:
-        #     self.plus = .01
-        #     self.pause_flag = True
-
-        self.chart.function = ArhimedSpiralStrategy(self.canvas_opts["width"], self.canvas_opts["height"], DIAPASON)
+        if self.pause_flag:
+            self.plus = 0
+            self.pause_flag = False
+        elif self.pause_flag is False:
+            self.plus = .01
+            self.pause_flag = True
 
     def increase_variable(self, event):
         self.plus += .001
