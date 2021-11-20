@@ -181,7 +181,7 @@ class App(TkinterApp):
     }
 
     arg = 1
-    plus = 0
+    plus = .01
     pause_flag = True
 
     def _ready(self):
@@ -222,7 +222,7 @@ class App(TkinterApp):
                            self.canvas, 'gray', markers=True)
 
     def save_picture(self, event):
-        self.canvas.postscript(file="condition.ps", colormode="color")
+        self.root.postscript(file="condition.ps", colormode="color")
         print("Состояние сохранено")
         img = Image.open("condition.ps")
         img.save("condition.png", "png")
