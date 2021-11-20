@@ -27,6 +27,9 @@ Mathematical education. Study of mathematical phenomena. Mathematical animations
 # Наглядно о том, как должны работать программы, представленные в данном репозитории:
 https://drive.google.com/file/d/17OhSwrdRIsnhshUIAZrB1_ldD_wDdFXg/view?usp=sharing
 
+### Для того чтобы увидеть данный пример вживую, необходимо перейти в другую ветку (four_in_window):
+![example.gif](example.gif)
+
 # Что вас ждёт:
 ![img.png](img.png)
 ![img_1.png](img_1.png)
