@@ -119,6 +119,7 @@ class App:
 
     def _gray_button(self):
         self.drawning_color = 'gray'
+        self.drawning_color = 'gray'
 
     def _yellow_button(self):
         self.drawning_color = 'yellow'
