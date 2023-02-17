@@ -9,6 +9,7 @@ import math
 # https://www.youtube.com/watch?v=DxntHp7-wbg&ab_channel=VertDider - видео, которое вдохновило на написание данного кода
 
 
+
 class App:
     _time_stamp = None
     _physics_flag = True
@@ -127,6 +128,7 @@ class App:
 
     def _lime_button(self):
         self.drawning_color = 'lime'
+        # self.drawning_color = 'lime'
 
     def choose_drawning_color(self):
         self.drawning_color = askcolor()[1]
