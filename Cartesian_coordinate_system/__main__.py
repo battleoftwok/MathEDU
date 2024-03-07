@@ -154,8 +154,8 @@ class App:
         """
         self.coords = []  # обнуление списка
         for step in range(0, self.width):
-            self.coords.append(
-                (.3 * step * math.e * math.sin(step * val), 0.3 * step * math.e * math.cos(step * val)))
+            self.coords.append((.1 * step * math.sin(step * val) - (1 - math.sin(step * val)),
+                                150 * math.tan(step * val / (val ** .5)) - (1 + math.cos(step * val))))
 
             # TODO: Примеры других функций лежат в текстовом файле
 

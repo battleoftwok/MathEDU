@@ -75,3 +75,6 @@ self.coords.append(
 self.coords.append(
     (100 * math.cos(step) * math.sin(step * val), 100 * math.sin(step * val) * math.cos(val)))
 self.coords.append((step * math.sin(1 / val + 10 * step), step * math.tan(1 / val + step)))
+
+self.coords.append((.1 * step * math.sin(step * val) - (1 - math.sin(step * val)),
+                                150 * math.tan(step * val / (val ** .5)) - (1 + math.cos(step * val))))
